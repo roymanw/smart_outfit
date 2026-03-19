@@ -3,8 +3,7 @@ import requests
 from PIL import Image
 import os
 
-# ---------------------- ⚠️ 必须修改：替换成你自己的和风天气API Key ----------------------
-# 注册获取地址：https://dev.qweather.com/ ，注册后创建Web API应用即可拿到免费Key
+# ---------------------- 已配置好你的天气API Key，无需修改 ----------------------
 WEATHER_API_KEY = "af593c7065f646b5bc2bf332d6188de2"  
 
 # 衣物存储文件夹，不用修改
@@ -25,7 +24,7 @@ def get_weather(city):
         
         # 先判断返回结果有没有code字段，彻底避免KeyError
         if "code" not in data:
-            st.error("❌ 天气接口异常，请检查你的API Key是否正确替换")
+            st.error("❌ 天气接口异常，请检查网络连接")
             return None, None
         
         # 接口返回成功，返回温度和天气
@@ -33,12 +32,12 @@ def get_weather(city):
             return int(data["now"]["temp"]), data["now"]["text"]
         # 接口返回报错，把错误码告诉用户方便排查
         else:
-            st.error(f"❌ 天气接口报错，错误码：{data['code']}，请检查API Key是否正确、城市名是否有效")
+            st.error(f"❌ 天气接口报错，错误码：{data['code']}，请检查城市名是否有效")
             return None, None
     
     # 捕获所有异常，不会再红屏
     except Exception as e:
-        st.error(f"❌ 请求天气失败：{str(e)}，请检查网络、API Key是否正确")
+        st.error(f"❌ 请求天气失败：{str(e)}，请检查网络连接")
         return None, None
 
 # 功能2：搭配逻辑（和之前一致，兼容外套）
