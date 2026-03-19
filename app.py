@@ -8,17 +8,20 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # ---------------------- 核心搭配逻辑 ----------------------
-def generate_outfit(temp, occasion):
+def generate_outfit(temp_min, temp_max, occasion):
+    # 取温度范围的中间值作为判断依据
+    temp_avg = (temp_min + temp_max) / 2
+    
     # 从已上传的衣物里按类型分类
     tops = [c for c in st.session_state.get("clothes", []) if c["type"] == "上衣"]
     bottoms = [c for c in st.session_state.get("clothes", []) if c["type"] == "裤子"]
     shoes = [c for c in st.session_state.get("clothes", []) if c["type"] == "鞋子"]
     coats = [c for c in st.session_state.get("clothes", []) if c["type"] == "外套"]
 
-    # 按具体温度筛选衣物
-    if temp > 25:
+    # 按温度范围的中间值筛选衣物
+    if temp_avg > 25:
         tops = [t for t in tops if "短袖" in t["style"] or "薄" in t["style"]]
-    elif 15 <= temp <= 25:
+    elif 15 <= temp_avg <= 25:
         tops = [t for t in tops if "长袖" in t["style"] or "卫衣" in t["style"]]
     else:
         tops = [t for t in tops if "厚" in t["style"]]
@@ -71,19 +74,20 @@ if menu == "上传衣服":
 # 页面2：生成搭配
 else:
     st.header("✨ 为你推荐搭配")
-    # 具体数字温度输入（带合理范围限制）
-    temp = st.number_input(
-        "输入当前温度（℃）",
+    # 滑块范围温度选择（可直接拖动选15-25这样的区间）
+    temp_range = st.slider(
+        "选择当前温度范围（℃）",
         min_value=-20,  # 最低温度限制
         max_value=50,   # 最高温度限制
-        value=20,       # 默认温度
+        value=(15, 25), # 默认选中15-25℃舒适区间
         step=1          # 每次调整1℃
     )
+    temp_min, temp_max = temp_range  # 解包出最低和最高温度
     occasion = st.selectbox("今天的场合", ["休闲", "工作"])
     
     if st.button("生成搭配"):
-        st.write(f"🌡️ 当前温度：{temp}℃")
-        tops, bottoms, shoes, coats = generate_outfit(temp, occasion)
+        st.write(f"🌡️ 当前温度范围：{temp_min}-{temp_max}℃")
+        tops, bottoms, shoes, coats = generate_outfit(temp_min, temp_max, occasion)
         
         # 展示推荐的搭配
         if tops and bottoms and shoes:
