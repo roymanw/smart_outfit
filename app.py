@@ -5,7 +5,7 @@ import os
 
 # ---------------------- ⚠️ 必须修改：替换成你自己的和风天气API Key ----------------------
 # 注册获取地址：https://dev.qweather.com/ ，注册后创建Web API应用即可拿到免费Key
-WEATHER_API_KEY = "替换成你的和风天气API Key"  
+WEATHER_API_KEY = "af593c7065f646b5bc2bf332d6188de2"  
 
 # 衣物存储文件夹，不用修改
 UPLOAD_FOLDER = "clothes"  
