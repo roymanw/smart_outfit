@@ -15,7 +15,7 @@ def generate_outfit(temp, occasion):
     shoes = [c for c in st.session_state.get("clothes", []) if c["type"] == "鞋子"]
     coats = [c for c in st.session_state.get("clothes", []) if c["type"] == "外套"]
 
-    # 按温度筛选衣物
+    # 按具体温度筛选衣物
     if temp > 25:
         tops = [t for t in tops if "短袖" in t["style"] or "薄" in t["style"]]
     elif 15 <= temp <= 25:
@@ -71,11 +71,18 @@ if menu == "上传衣服":
 # 页面2：生成搭配
 else:
     st.header("✨ 为你推荐搭配")
-    temp = st.number_input("输入当前温度（℃）", min_value=-20, max_value=50, value=20)
+    # 具体数字温度输入（带合理范围限制）
+    temp = st.number_input(
+        "输入当前温度（℃）",
+        min_value=-20,  # 最低温度限制
+        max_value=50,   # 最高温度限制
+        value=20,       # 默认温度
+        step=1          # 每次调整1℃
+    )
     occasion = st.selectbox("今天的场合", ["休闲", "工作"])
     
     if st.button("生成搭配"):
-        st.write(f"🌡️ 当前设置温度：{temp}℃")
+        st.write(f"🌡️ 当前温度：{temp}℃")
         tops, bottoms, shoes, coats = generate_outfit(temp, occasion)
         
         # 展示推荐的搭配
